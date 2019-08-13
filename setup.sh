@@ -1,9 +1,11 @@
 #!/bin/bash
 
 P_LIB="$HOME/"
+P_LIB="/media/ubuntu-gnome/"
 cd "$P_LIB" && INTER="Arch/" && P_LIB+="$INTER" && cd "$P_LIB"
 P_LIB+="`ls -l | grep "0p" | sed -e 's/.*\ \(0p.*$\)/\1/g'`"
 
+cd
 sudo apt remove --purge -y firefox
 sudo apt update
 sudo apt install firefox
@@ -63,8 +65,7 @@ source \"\$ZSH/oh-my-zsh.sh\" " >> ~/.zshrc
 sudo apt install -y curl libncurses5-dev python3-dev build-essential libfontconfig1 python3-pip chrome-gnome-shell pkg-config autoconf software-properties-common python-software-properties subversion
 
 svn checkout https://github.com/ryanoasis/nerd-fonts/trunk/patched-fonts/Inconsolata
-cp ~/Inconsolata/complete/Inconsolata\ Nerd\ Font\ Complete.otf ~/.fonts
-rm -rf ~/Inconsolata
+cp ~/Inconsolata/complete/Inconsolata\ Nerd\ Font\ Complete.otf ~/.fonts && rm -rf ~/Inconsolata
 
 wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
 wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
@@ -76,12 +77,7 @@ mv 10-powerline-symbols.conf ~/.config/fontconfig/conf.d/
 
 git clone https://github.com/vim/vim.git
 cd vim
-./configure --with-features=huge \
-            --enable-multibyte \
-	        --enable-python3interp=yes \
-	        --with-python3-config-dir=/usr/lib/python3.5/config \
-            --enable-cscope \
-	        --prefix=/usr/local
+./configure --with-features=huge --enable-multibyte --enable-python3interp=yes --with-python3-config-dir=/usr/lib/python3.5/config --enable-cscope --prefix=/usr/local
 cd src
 make VIMRUNTIMEDIR=/usr/local/share/vim/vim81
 sudo make install
@@ -100,7 +96,7 @@ rm -rf cmake-3.15.2*.tar.gz
 
 pip3 install --user neovim
 
-cd ~/
+cd /
 sudo chown ubuntu-gnome:ubuntu-gnome /media
 cd /media
 sudo chown ubuntu-gnome:ubuntu-gnome ubuntu-gnome
@@ -110,6 +106,7 @@ cd
 wget https://github.com/gnunn1/tilix/releases/download/1.9.3/tilix.zip
 sudo unzip tilix.zip -d /
 sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+rm -rf ~/tilix.zip
 
 firstRow="if [ \"\$TILIX_ID\" ] || [ \"\$VTE_VERSION\" ]; then"
 secondRow="\        source /etc/profile.d/vte.sh"
@@ -119,7 +116,9 @@ sed -i -e "\$a$firstRow" -e "\$a$secondRow" -e "\$a$thirdRow" $HOME"/.zshrc"
 
 sudo ln -s /etc/profile.d/vte-2.91.sh /etc/profile.d/vte.sh
 
+cp /media/ubuntu-gnome/Arch/0post_crash/software/tilix.dconf .
 dconf load /com/gexperts/Tilix/ < tilix.dconf
+rm -rf ~/tilix.dconf
 
 cd ~/.vim/plugged/vim-airline/autoload/airline
 sed -i -e 's/df5f00/0087af/' -e 's/166/31/' themes.vim 
@@ -156,8 +155,10 @@ cd ~/.config/autostart
 cp -v /etc/xdg/autostart/tracker-* ./
 for FILE in `ls`; do echo Hidden=true >> $FILE; done
 rm -rf ~/.cache/tracker ~/.local/share/tracker
+cd
 
 P_CLANG="$HOME/"
+P_CLANG="/media/ubuntu-gnome/"
 cd "$P_CLANG"
 P_CLANG+="$INTER"
 P_CLANG+="`ls -l "$INTER" | grep clang | sed -e 's/.*\ \([a-z]\{5\}$\)/\1/g'`"
@@ -167,7 +168,18 @@ echo "export PATH=\$P_CLANG/clang+llvm-7.0.1-x86_64-linux-gnu-ubuntu-16.04/bin/:
 echo "export LD_LIBRARY_PATH=\$P_CLANG/clang+llvm-7.0.1-x86_64-linux-gnu-ubuntu-16.04/lib/:\$LD_LIBRARY_PATH" >> ~/.zshrc
 cd
 
-curl --compressed -o- -L https://yarnpkg.com/install.sh | bash
+curl https://sh.rustup.rs -sSf | sh
+source $HOME/.cargo/env
+
+ln -s /media/ubuntu-gnome/Arch/0post_crash/software/.cargo .
+ln -s /media/ubuntu-gnome/Arch/0post_crash/software/.rustup .
+echo "export PATH=/media/ubuntu-gnome/Arch/0post_crash/software/.cargo/env/:\$PATH" >> ~/.zshrc
+
+cd
+ln -s /media/ubuntu-gnome/Arch/0post_crash/software/.vim .
+ln -s /media/ubuntu-gnome/Arch/0post_crash/software/.themes .
+
+# curl --compressed -o- -L https://yarnpkg.com/install.sh | bash
 
 exit 0
 python3 import neovim
