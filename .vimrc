@@ -34,16 +34,12 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'ryanoasis/vim-devicons'
 
-
-
 call plug#end()
 
 set cot+=preview
 
 set number                     " Show current line number
 set relativenumber             " Show relative line numbers
-
-" set runtimepath=~/.vim,/var/lib/vim/addons,/usr/share/vim/vimfiles,/usr/share/vim/vim80,/usr/share/vim/vimfiles/after,/var/lib/vim/addons/after,~/.vim/after
 
 "let $NVIM_PYTHON_LOG_FILE="/tmp/nvim_log"
 "let $NVIM_PYTHON_LOG_LEVEL="DEBUG"

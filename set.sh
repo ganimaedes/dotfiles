@@ -1,7 +1,13 @@
 #!/bin/bash
 
-P_LIB="$HOME/"
-P_LIB="/media/ubuntu-gnome/"
+LNK="/media/"
+FOLDER=""
+USER=""
+cd $LNK
+USER=`ls -l | grep "\ ub" | sed -e 's/.*\ \(ub.*-.*e$\)/\1/g'`
+LNK+=$USER && LNK+="/"
+
+P_LIB=$LNK
 cd "$P_LIB" && INTER="Arch/" && P_LIB+="$INTER" && cd "$P_LIB"
 P_LIB+="`ls -l | grep "0p" | sed -e 's/.*\ \(0p.*$\)/\1/g'`"
 
@@ -21,14 +27,9 @@ chsh -s `which zsh`
 git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
 
 git clone https://github.com/gabrielelana/awesome-terminal-fonts
-mkdir ~/.fonts
-cp awesome-terminal-fonts/build/*.ttf ~/.fonts
-cp awesome-terminal-fonts/build/*.sh ~/.fonts
-fc-cache -fv ~/.fonts
+mkdir ~/.fonts && cp awesome-terminal-fonts/build/*.ttf ~/.fonts && cp awesome-terminal-fonts/build/*.sh ~/.fonts && fc-cache -fv ~/.fonts
 sed -i 's/PragmataPro/Inconsolata+Awesome/g' ~/awesome-terminal-fonts/config/10-symbols.conf
-mkdir -p ~/.config/fontconfig/conf.d
-cp ~/awesome-terminal-fonts/config/10-symbols.conf ~/.config/fontconfig/conf.d
-rm -rf ~/awesome-terminal-fonts
+mkdir -p ~/.config/fontconfig/conf.d && cp ~/awesome-terminal-fonts/config/10-symbols.conf ~/.config/fontconfig/conf.d && rm -rf ~/awesome-terminal-fonts
 
 # --------------------------------------------------------------------
 
@@ -84,8 +85,7 @@ sudo make install
 cd ../..
 rm -rf ~/vim
 
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 wget  https://github.com/Kitware/CMake/releases/download/v3.15.2/cmake-3.15.2-Linux-x86_64.tar.gz
 tar -xvzf cmake* 
@@ -96,10 +96,17 @@ rm -rf cmake-3.15.2*.tar.gz
 
 pip3 install --user neovim
 
+LNK="/media/" && FOLDER="" && USER=""
+cd $LNK
+USER=`ls -l | grep "\ ub" | sed -e 's/.*\ \(ub.*-.*e$\)/\1/g'`
+LNK+=$USER && LNK+="/" && INTER="Arch/" && LNK+=$INTER && cd $LNK && FOLDER=$LNK && FOLDER+=`ls -l | grep "0p" | sed -e 's/.*\ \(0p.*$\)/\1/g'`
+cp $FOLDER/03/0DESKTOP/dotfiles/.vimrc ~/
+ln -s $FOLDER/software/.vim ~/
+
 cd /
-sudo chown ubuntu-gnome:ubuntu-gnome /media
-cd /media
-sudo chown ubuntu-gnome:ubuntu-gnome ubuntu-gnome
+sudo chown $USER:$USER $LNK
+cd $LNK
+sudo chown $USER:$USER $USER
 
 cd
 
@@ -108,30 +115,22 @@ sudo unzip tilix.zip -d /
 sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
 rm -rf ~/tilix.zip
 
-firstRow="if [ \"\$TILIX_ID\" ] || [ \"\$VTE_VERSION\" ]; then"
-secondRow="\        source /etc/profile.d/vte.sh"
-thirdRow="fi"
+firstRow="if [ \"\$TILIX_ID\" ] || [ \"\$VTE_VERSION\" ]; then" && secondRow="\        source /etc/profile.d/vte.sh" && thirdRow="fi"
 
 sed -i -e "\$a$firstRow" -e "\$a$secondRow" -e "\$a$thirdRow" $HOME"/.zshrc"
 
 sudo ln -s /etc/profile.d/vte-2.91.sh /etc/profile.d/vte.sh
 
-cp /media/ubuntu-gnome/Arch/0post_crash/software/tilix.dconf .
+cp $FOLDER/software/tilix.dconf .
 dconf load /com/gexperts/Tilix/ < tilix.dconf
 rm -rf ~/tilix.dconf
 
-cd ~/.vim/plugged/vim-airline/autoload/airline
-sed -i -e 's/df5f00/0087af/' -e 's/166/31/' themes.vim 
+
 
 git clone https://github.com/lassekongo83/zuki-themes
-cd zuki-themes/
-git checkout -b 3.18 origin/3.18
-git pull
-cd 
+cd zuki-themes/ && git checkout -b 3.18 origin/3.18 && git pull && cd 
 mkdir ~/.themes
-mv ~/zuki-themes/Zukitre/ ~/.themes
-mv ~/zuki-themes/Zuki-shell ~/.themes
-rm -rf ~/zuki-themes
+mv ~/zuki-themes/Zukitre/ ~/.themes && mv ~/zuki-themes/Zuki-shell ~/.themes && rm -rf ~/zuki-themes
 
 gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
 
@@ -157,54 +156,75 @@ for FILE in `ls`; do echo Hidden=true >> $FILE; done
 rm -rf ~/.cache/tracker ~/.local/share/tracker
 cd
 
-P_CLANG="$HOME/"
-P_CLANG="/media/ubuntu-gnome/"
-cd "$P_CLANG"
-P_CLANG+="$INTER"
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo apt update
+sudo apt install libstdc++6
+
+
+P_CLANG="/media/ubuntu-gnome/" && cd "$P_CLANG" && INTER="Arch/" && P_CLANG+="$INTER"
+P_CLANG="$LNK" cd "$P_CLANG" && cd ..
 P_CLANG+="`ls -l "$INTER" | grep clang | sed -e 's/.*\ \([a-z]\{5\}$\)/\1/g'`"
-#MEDIA=`ls -l Arch | grep clang | sed -e 's/.*\ \([a-z]\{5\}$\)/\1/g'`
-#P_CLANG+="$MEDIA"
-echo "export PATH=\$P_CLANG/clang+llvm-7.0.1-x86_64-linux-gnu-ubuntu-16.04/bin/:\$PATH" >> ~/.zshrc
-echo "export LD_LIBRARY_PATH=\$P_CLANG/clang+llvm-7.0.1-x86_64-linux-gnu-ubuntu-16.04/lib/:\$LD_LIBRARY_PATH" >> ~/.zshrc
+echo "export PATH=$P_CLANG/clang+llvm-7.0.1-x86_64-linux-gnu-ubuntu-16.04/bin/:\$PATH" >> ~/.zshrc
+echo "export LD_LIBRARY_PATH=$P_CLANG/clang+llvm-7.0.1-x86_64-linux-gnu-ubuntu-16.04/lib/:\$LD_LIBRARY_PATH" >> ~/.zshrc
 cd
 
-curl https://sh.rustup.rs -sSf | sh
-source $HOME/.cargo/env
+ln -s $FOLDER/installation/.rustup .
 
-ln -s /media/ubuntu-gnome/Arch/0post_crash/software/.cargo .
-ln -s /media/ubuntu-gnome/Arch/0post_crash/software/.rustup .
-echo "export PATH=/media/ubuntu-gnome/Arch/0post_crash/software/.cargo/env/:\$PATH" >> ~/.zshrc
+echo "export PATH=$FOLDER/software/.cargo/env/:\$PATH" >> ~/.zshrc
 
-cd
-ln -s /media/ubuntu-gnome/Arch/0post_crash/software/.vim .
-ln -s /media/ubuntu-gnome/Arch/0post_crash/software/.themes .
+echo "export PATH=$FOLDER/software/.cargo/env/:\$PATH" >> ~/.profile
+export "PATH=\"$FOLDER/installation/bin:\$PATH\"" >> ~/.profile
 
-# curl --compressed -o- -L https://yarnpkg.com/install.sh | bash
+
+# add .cquery file in project root folder:
+echo "%clang
+%c -std=gnu11
+%cpp -std=gnu++14
+-pthread
+
+# Includes
+-I$LNK/prog/cquery/third_party
+-I/usr/include
+# -I/work/cquery/another_third_party
+# -I space_is_not_allowed" >> ~/.cquery
+
+# FOR A COLD INSTALLATION OF RUST:
+# CONFIGURE CLANG & LLVM FIRST:
+clang --version
+llc --version
+RUSTUP_HOME=$FOLDER/installation CARGO_HOME=$FOLDER/installation bash -c 'curl https://sh.rustup.rs -sSf | sh -s -- -y'
+rustup default stable
+# LOG OUT & LOG BACK IN
+mv ~/.rustup $FOLDER/installation
+ln -s $FOLDER/installation/.rustup .
+rustc --version
+
+
+cd / 
+
+LNK="/media/" && FOLDER="" && USER=""
+cd $LNK
+USER=`ls -l | grep "\ ub" | sed -e 's/.*\ \(ub.*-.*e$\)/\1/g'`
+
+cd /
+sudo chmod a+w $LNK
+cd $LNK
+
+LNK+=$USER && LNK+="/"
+ls -l
+sudo chmod a+r $USER
+sudo chmod a+wx $USER
+ls -l
+
+INTER="Arch/" && LNK+=$INTER && cd $LNK && FOLDER=$LNK && FOLDER+=`ls -l | grep "0p" | sed -e 's/.*\ \(0p.*$\)/\1/g'`
+cd /
+cd $LNK
+sudo chmod a+w $FOLDER
+
+cd /tmp
+sudo chown $USER:$USER tmp
 
 exit 0
+
 python3 import neovim
 
-
-sudo apt install -y build-essential libbz2-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev tk-dev
-sudo apt install -y libpng-dev libfreetype6-dev
-curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
-
-echo "export PATH=\"\$HOME/.pyenv/bin:\$PATH\"
-eval \"\$(pyenv init -)\"
-eval \"\$(pyenv virtualenv-init -)\"" >> ~/.zshrc
-
-pyenv install 3.6.1
-pyenv virtualenv 3.6.1 general
-pyenv global general
-
-
-wget https://www.python.org/ftp/python/3.6.1/Python-3.6.1.tgz
-tar -xvzf Python-3.6.1.tgz
-cd Python-3.6.1
-./configure
-make
-sudo make altinstall
-
-
-pip3 install --user pynvim
-pip3 install --user --upgrade pynvim
