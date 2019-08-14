@@ -52,8 +52,8 @@ let g:LanguageClient_autoStart=1
 let g:LanguageClient_trace='verbose'
 
 let g:LanguageClient_serverCommands = {
-    \ 'cpp': ['/media/ubuntu-gnome/Arch/prog/cquery/build/cquery', '--log-file=/tmp/cq.log'],
-    \ 'c': ['/media/ubuntu-gnome/Arch/prog/cquery/build/cquery', '--log-file=/tmp/cq.log'],
+    \ 'cpp': ['/cquery/build/cquery', '--log-file=/tmp/cq.log'], " /m/u-g/A/p
+    \ 'c': ['/cquery/build/cquery', '--log-file=/tmp/cq.log'],   " /m/u-g/A/p
     \ }
 
 let g:LanguageClient_rootMarkers = {
