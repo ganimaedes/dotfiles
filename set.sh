@@ -161,7 +161,12 @@ sudo apt update
 sudo apt install libstdc++6
 
 
-P_CLANG="/media/ubuntu-gnome/" && cd "$P_CLANG" && INTER="Arch/" && P_CLANG+="$INTER"
+LNK="/media/" && FOLDER="" && USER=""
+cd $LNK
+USER=`ls -l | grep "\ ub" | sed -e 's/.*\ \(ub.*-.*e$\)/\1/g'`
+LNK+=$USER && LNK+="/"
+cd
+P_CLANG=$LNK && cd "$P_CLANG" && INTER="Arch/" && P_CLANG+="$INTER"
 P_CLANG="$LNK" cd "$P_CLANG" && cd ..
 P_CLANG+="`ls -l "$INTER" | grep clang | sed -e 's/.*\ \([a-z]\{5\}$\)/\1/g'`"
 echo "export PATH=$P_CLANG/clang+llvm-7.0.1-x86_64-linux-gnu-ubuntu-16.04/bin/:\$PATH" >> ~/.zshrc
